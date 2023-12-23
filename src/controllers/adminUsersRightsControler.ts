@@ -1,4 +1,4 @@
-import UserActiveDir from '../services/UserActiveDirServices'
+import UserActiveDirServices from '../services/UserActiveDirServices'
 
 //const { getAllActiveDirUsers, getActiveDirUserByID, editUserById, createUser } = require('../services/adminServices');
 //const { getAllRoles } = require('../services/workflowServices');
@@ -9,7 +9,7 @@ export const adminUsersRightsControler=require('express').Router();
 
 adminUsersRightsControler.get('/',async(req,res)=>{
     try {
-        let data=await UserActiveDir.getAllActiveDirUsers();
+        let data=await UserActiveDirServices.getAllActiveDirUsers();
         res.status(201);
         res.json(data);
     } catch (error) {

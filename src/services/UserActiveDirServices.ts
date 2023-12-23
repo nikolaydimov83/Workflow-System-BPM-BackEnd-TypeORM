@@ -1,6 +1,6 @@
 import { AppDataSource } from "../data-source"
-import { UserActiveDir, UserStatus } from "../entity/UserActiveDir"
-import { NextFunction, Request, Response } from "express"
+import { UserActiveDir } from "../entity/UserActiveDir"
+
 
 export default class UserActiveDirServices {
 
