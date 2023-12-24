@@ -1,111 +1,50 @@
 import { AppDataSource } from "../data-source"
 import { Role } from "../entity/Role"
 
-class RoleInfo{
-    
-    roleName:'string'
-}
-
 export class RoleServices {
 
     
     
-    static async createRole(roleInfo:RoleInfo){
-        const roleRepository = AppDataSource.getRepository(Role)
-        const role = Object.assign(new Role(), roleInfo)
+    static async createRole(roleInfo:Role){
+        const roleRepository = AppDataSource.getRepository(Role);
+        const role = Object.assign(new Role(), roleInfo);
 
         return roleRepository.save(role)
         
     }
 
-    /*async all(request: Request, response: Response, next: NextFunction) {
-        return this.roleRepository.find()
+    static async getAllRoles(){
+        const roleRepository = AppDataSource.getRepository(Role);
+        let result=await roleRepository.find({});
+        return result
     }
 
-    async one(request: Request, response: Response, next: NextFunction) {
-        const id = parseInt(request.params.id)
-
-
-        const user = await this.roleRepository.findOne({
-            where: { _id:id }
-        })
-
-        if (!user) {
-            return "unregistered user"
-        }
-        return user
+    static async getRoleById(id:number){
+        const roleRepository = AppDataSource.getRepository(Role);
+        let result=await roleRepository.createQueryBuilder("role").where("role._id= :roleId",{roleId:id}).getOne()
+        return result
     }
 
-    async save(request: Request, response: Response, next: NextFunction) {
-        const { roleName } = request.body;
-        const role = Object.assign(new Role(), {
-            roleName
-        })
-
-        return this.roleRepository.save(role)
-    }
-
-    async remove(request: Request, response: Response, next: NextFunction) {
-        const id = parseInt(request.params.id)
-
-        let roleToRemove = await this.roleRepository.findOneBy({ _id:id })
-
-        if (!roleToRemove) {
-            return "this user not exist"
-        }
-
-        await this.roleRepository.remove(roleToRemove)
-
-        return "user has been removed"
-    }*/
-
-}
-
-/*async function createRole(roleInfo){
-    let result=await Role.create(roleInfo)
-    
-    return result
-}
-
-async function editRole(roleInfo,id){
-    roleInfo.role='';
-    if (roleInfo.roleType=='Branch'){
-        roleInfo.role=roleInfo.roleType+roleInfo.roleName;
-    }else{
-        roleInfo.role=roleInfo.roleName;
-    }
-   // const session = await mongoose.startSession();
-    //let oldRole=(await Role.findById(id)).role.toString();
-    let result;
-    //await session.startTransaction();
-    
-    //try {
+    static async editRole(roleInfo:Role,id:string){
+        const roleRepository = AppDataSource.getRepository(Role);
+        const idNum=parseInt(id)
+        const roleToUpdate=await roleRepository.findOne({where:{_id:idNum}});
+        Object.assign(roleToUpdate,roleInfo)
+        roleRepository.save(roleToUpdate);
         
-        
-        result=await Role.findByIdAndUpdate(id,roleInfo);
-  //      let updatedUsers=await editAllUsersWithRole(oldRole,session);
-    //    await session.commitTransaction();
-    //} catch (error) {
-    //  await session.abortTransaction();
-    //throw error;
-    //} finally {
-      session.endSession();
-   // }
 
-    
-    return result
+    }
+
 }
 
-async function getAllRoles(){
-    let result=await Role.find({}).lean()
-    return result
-}
+/*
 
 
-async function getRoleById(id){
-    let result=await Role.findById(id).lean()
-    return result
-}
+
+
+
+
+
 
 
 

@@ -17,37 +17,35 @@ workflowController.post('/roles',async(req,res)=>{
         res.json(data);
     } catch (error) {
         res.status(401);
+        res.json(error)
+        //res.json({message:parseError(error)});
+    }
+
+
+});
+workflowController.get('/roles',async(req,res)=>{
+    try {
+        
+        let data=await RoleServices.getAllRoles();
+        res.status(201);
+        res.json(data);
+    } catch (error) {
+        res.status(401);
         //res.json({message:parseError(error)});
     }
 
 
 });
 
-/*workflowController.get('/roles',async(req,res)=>{
-    try {
-        
-        let data=await getAllRoles();
-        res.status(201);
-        res.json(data);
-    } catch (error) {
-        res.status(401);
-        res.json({message:parseError(error)});
-    }
-
-
-});
-
-
-
 workflowController.get('/roles/:id',async(req,res)=>{
     try {
         let id=req.params.id
-        let data=await getRoleById(id)
+        let data=await RoleServices.getRoleById(id)
         res.status(201);
         res.json(data);
     } catch (error) {
         res.status(401);
-        res.json({message:parseError(error)});
+        //res.json({message:parseError(error)});
     }
 
 
@@ -56,16 +54,27 @@ workflowController.get('/roles/:id',async(req,res)=>{
 workflowController.put('/roles/:id',async(req,res)=>{
     try {
         let id=req.params.id
-        let data=await editRole(req.body,id);
+       
+        let data=await RoleServices.editRole(req.body,id);
         res.status(201);
         res.json(data);
     } catch (error) {
         res.status(401);
-        res.json({message:parseError(error)});
+        res.json(error)
+        //res.json({message:parseError(error)});
     }
 
 
 });
+
+
+/*
+
+
+
+
+
+
 
 workflowController.get('/statuses',async(req,res)=>{
     try {

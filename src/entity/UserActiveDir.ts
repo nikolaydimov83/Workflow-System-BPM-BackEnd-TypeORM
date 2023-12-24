@@ -1,7 +1,8 @@
 import { IsEnum, IsInt, Length, Max, Min, MinLength, Validate, isInt, validate } from "class-validator"
 import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, CreateDateColumn, UpdateDateColumn, ManyToOne } from "typeorm"
-import { EmailValidator } from "../validators/validators"
+import { EmailValidator } from "../validators/email"
 import { Role } from "./Role"
+import { checkInput } from "../utils/checkInput"
 export enum UserStatus {
     Active = 'Active',
     Inactive = 'Inactive',
@@ -39,47 +40,33 @@ export class UserActiveDir{
 
     })
     @MinLength(1)
-
     branchName:string
     
+   
     @Column({type:"varchar"})
     @IsEnum(UserStatus, { message: 'Invalid user status' })
     userStatus:UserStatus
 
+    
     @CreateDateColumn()
-     
     createdAt:Date
     
     @UpdateDateColumn()
-
     updatedAt:Date
     
     @ManyToOne(
-        () => Role, (role:Role) => role.users)
+        () => Role, (role:Role) => role._id)
+        
         role: Role
 
-    private async checkInput() {
-        const errors = await validate(this)
-        errors.forEach((err)=>{
-            console.log(err)
-        })
-        if (errors.length>0){
-            throw errors
-        }
-    
-     }
+
 
     
-     @BeforeInsert()
-        checkBeforeInsert(){
-            this.checkInput()
-        }
-
-   
-
+    @BeforeInsert()
     @BeforeUpdate()
     checkBeforeUpdate(){
-        this.checkInput()
+
+        checkInput(this)
     }
     
 

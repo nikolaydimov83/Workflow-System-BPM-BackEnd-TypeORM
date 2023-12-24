@@ -6,6 +6,7 @@ import { User } from "./entity/User"
 import { UserActiveDir, UserStatus } from "./entity/UserActiveDir"
 import { validate } from "class-validator"
 import { routes } from "./routes";
+import { Role } from "./entity/Role";
 
 AppDataSource.initialize().then(async () => {
 
@@ -13,23 +14,6 @@ AppDataSource.initialize().then(async () => {
     const app = express()
     app.use(express.json())
     routes(app);
-    // register express routes from defined application routes
-    /*Routes.forEach(route => {
-        (app as any)[route.method](route.route, (req: Request, res: Response, next: Function) => {
-            const result = (new (route.controller as any))[route.action](req, res, next)
-            if (result instanceof Promise) {
-                result.then(result => result !== null && result !== undefined ? res.send(result) : undefined)
-
-            } else if (result !== null && result !== undefined) {
-                res.json(result)
-            }
-        })
-    })*/
-
-    // setup express app here
-    // ...
-
-    // start express server
     app.listen(3000);
     
     // insert new users for test
