@@ -5,6 +5,8 @@ import { ValidationError } from "class-validator";
 export function parseError(errors:any){
     if (errors.message){
         return errors.message
+    }else if(errors.errors){
+        return errors.errors.map((e)=>e.msg).join('\n')
     }
     return errors.map((err)=>{
         return err.constraints

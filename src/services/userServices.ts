@@ -30,8 +30,8 @@ export async function register(email:string,password:string){
 
 }
 
-/*async function login(email,password){
-    let user=await User.findOne({email:email});
+export async function login(email,password){
+    let user=await userActiveDirRepository.findOneBy({email:email})
     if (!user){
         throw new Error('Wrong username or password!');
     }
@@ -40,14 +40,14 @@ export async function register(email:string,password:string){
         throw new Error('Wrong username or password!')
     }
     let token=createToken(user,key);
-    await user.save();
+    
     if (user.userStatus=='Inactive'){
         throw new Error('User is not active. Please contact administrator!')
     }
     return{_id:user._id,accessToken:token,email:user.email,role:user.role}
 }
 
-async function createResetPassToken(email){
+/*async function createResetPassToken(email){
     const user=await User.findOne({email:email})
     if(!user){
         throw new Error('Your email does not exist in the database!')

@@ -1,7 +1,7 @@
 import { body, validationResult } from 'express-validator';
 import { Router } from 'express';
 
-import { register } from '../services/userServices';
+import { login, register } from '../services/userServices';
 import { parseError } from '../utils/utils';
 //const {serverSendMail, emailAdress}=require('../emailClient/mail');
 //const InvalidToken = require('../models/InvalidToken');
@@ -17,7 +17,7 @@ authController.post('/register',
     try {
         const errors=validationResult(req);
         if (!errors.isEmpty()){
-            throw {expressValidator:errors.array()}
+            throw errors
         }
         let user=await register(req.body.email,req.body.password);
         res.status(202);
@@ -32,11 +32,16 @@ authController.post('/register',
     ;
 })
 
-/*authController.post('/login',
-                body('password').isLength(passwordLength).withMessage(`Password must be at least ${passwordLength} chars long`),
+authController.post('/login',
+                body('password')
+                .isLength({min:passwordLength})
+                .withMessage(`Password must be at least ${passwordLength} chars long`),
                 async(req,res)=>{
     try {
-        
+        const errors=validationResult(req);
+        if (!errors.isEmpty()){
+            throw errors
+        }
         let user=await login(req.body.email,req.body.password);
         
         res.status(202);
@@ -48,7 +53,7 @@ authController.post('/register',
     }
 })
 
-authController.get('/logout',async(req,res)=>{
+/*authController.get('/logout',async(req,res)=>{
     try {
         const token=req.headers['x-authorization'];
         await InvalidToken.create({token:token});
