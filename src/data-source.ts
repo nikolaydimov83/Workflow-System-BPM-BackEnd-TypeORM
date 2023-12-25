@@ -1,6 +1,5 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
-import { User } from "./entity/User"
 import { UserActiveDir } from "./entity/UserActiveDir"
 import { Role } from "./entity/Role"
 
@@ -12,7 +11,7 @@ export const AppDataSource = new DataSource({
     database: "tempdb",
     synchronize: true,
     logging: false,
-    entities: [User,UserActiveDir,Role],
+    entities: [UserActiveDir,Role],
     migrations: [],
     subscribers: [],
     options: {

@@ -1,7 +1,7 @@
 import {adminUsersRightsControler} from './controllers/adminUsersRightsControler';
 import { workflowController } from './controllers/workflowController';
-/*const authController = require("./controllers/authController");
-const changeIapplyController = require("./controllers/changeIapplyController");
+import {authController} from "./controllers/authController";
+/*const changeIapplyController = require("./controllers/changeIapplyController");
 const changeStatusController = require("./controllers/changeStatusController");
 const commentsController = require("./controllers/commentsController");
 const createController = require("./controllers/createController");
@@ -16,8 +16,8 @@ const workflowController = require("./controllers/workflowController");*/
 export const routes=(app)=>{
     app.use('/admin',adminUsersRightsControler);
     app.use('/workflow',workflowController);
-    /*app.use('/users',authController);
-    app.use('/data/catalog',dataController);
+    app.use('/users',authController);
+    /*app.use('/data/catalog',dataController);
     app.use('/data/create',createController);
     app.use('/data/edit',editController);
     app.use('/iApply',iApplyConroller);

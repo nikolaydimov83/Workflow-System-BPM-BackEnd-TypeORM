@@ -1,6 +1,7 @@
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from "class-validator";
 const emailPattern = /^[A-Za-z0-9]+@postbank.bg$/
-@ValidatorConstraint({ name: 'customEmail', async: false })
+const example='user@postbank.bg'
+@ValidatorConstraint({ name: 'email', async: false })
 export class EmailValidator implements ValidatorConstraintInterface {
   validate(email: string, args: ValidationArguments) {
     // Your custom validation logic goes here
@@ -10,6 +11,6 @@ export class EmailValidator implements ValidatorConstraintInterface {
 
   defaultMessage(args: ValidationArguments) {
     // This message will be used if the validation fails
-    return `Invalid pattern for email.`;
+    return `Invalid pattern for email. Expect: ${example}`;
   }
 }

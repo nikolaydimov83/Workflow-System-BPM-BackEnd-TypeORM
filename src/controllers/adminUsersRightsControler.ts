@@ -1,11 +1,13 @@
 import UserActiveDirServices from '../services/UserActiveDirServices'
+import { parseError } from '../utils/utils';
+import {Router} from 'express'
 
 //const { getAllActiveDirUsers, getActiveDirUserByID, editUserById, createUser } = require('../services/adminServices');
 //const { getAllRoles } = require('../services/workflowServices');
 //const { parseError } = require('../utils/utils');
 
 
-export const adminUsersRightsControler=require('express').Router();
+export const adminUsersRightsControler=Router();
 
 adminUsersRightsControler.get('/',async(req,res)=>{
     try {
@@ -14,7 +16,7 @@ adminUsersRightsControler.get('/',async(req,res)=>{
         res.json(data);
     } catch (error) {
         res.status(401);
-        //res.json({message:parseError(error)});
+        res.json({message:parseError(error)});
     }
 
 
@@ -22,15 +24,12 @@ adminUsersRightsControler.get('/',async(req,res)=>{
 
 adminUsersRightsControler.post('/',async(req,res)=>{
     try {
-
         let user=await UserActiveDirServices.createUser(req.body);
         res.status(201);
         res.json(user);
     } catch (error) {
         res.status(401);
-        console.log(error)
-        res.json(error)
-        //res.json({message:parseError(error)});
+        res.json({message:parseError(error)});
     }
    
 
@@ -45,8 +44,7 @@ adminUsersRightsControler.get('/:id',async(req,res)=>{
         res.json(data);
     } catch (error) {
         res.status(401);
-        res.json(error)
-        //res.json({message:parseError(error)});
+        res.json({message:parseError(error)});
     }
 });
 
@@ -58,8 +56,7 @@ adminUsersRightsControler.put('/:id',async(req,res)=>{
         res.json(updateUsr)
     } catch (error) {
         res.status(401);
-        res.json(error);
-        //res.json({message:parseError(error)})
+        res.json({message:parseError(error)})
     }
 });
 

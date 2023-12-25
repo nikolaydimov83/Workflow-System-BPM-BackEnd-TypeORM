@@ -1,12 +1,7 @@
 import * as express from "express"
-import * as bodyParser from "body-parser"
-import { Request, Response } from "express"
 import { AppDataSource } from "./data-source";
-import { User } from "./entity/User"
-import { UserActiveDir, UserStatus } from "./entity/UserActiveDir"
-import { validate } from "class-validator"
 import { routes } from "./routes";
-import { Role } from "./entity/Role";
+
 
 AppDataSource.initialize().then(async () => {
 

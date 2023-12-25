@@ -1,5 +1,6 @@
 import { RoleServices } from "../services/RoleServices";
-
+import { parseError } from "../utils/utils";
+import {Router} from 'express'
 
 //const { getAllStatuses, createStatus, getStatusById, editStatus } = require('../services/statusServices');
 //const { getAllSubjects, createSubject, editSubjectById, getSubjectById } = require('../services/subjectServices');
@@ -7,7 +8,7 @@ import { RoleServices } from "../services/RoleServices";
 //const { parseError } = require('../utils/utils');
 
 
-export const workflowController=require('express').Router();
+export const workflowController=Router();
 
 workflowController.post('/roles',async(req,res)=>{
     try {
@@ -17,8 +18,7 @@ workflowController.post('/roles',async(req,res)=>{
         res.json(data);
     } catch (error) {
         res.status(401);
-        res.json(error)
-        //res.json({message:parseError(error)});
+        res.json({message:parseError(error)});
     }
 
 
@@ -31,7 +31,7 @@ workflowController.get('/roles',async(req,res)=>{
         res.json(data);
     } catch (error) {
         res.status(401);
-        //res.json({message:parseError(error)});
+        res.json({message:parseError(error)});
     }
 
 
@@ -45,7 +45,7 @@ workflowController.get('/roles/:id',async(req,res)=>{
         res.json(data);
     } catch (error) {
         res.status(401);
-        //res.json({message:parseError(error)});
+        res.json({message:parseError(error)});
     }
 
 
@@ -60,8 +60,7 @@ workflowController.put('/roles/:id',async(req,res)=>{
         res.json(data);
     } catch (error) {
         res.status(401);
-        res.json(error)
-        //res.json({message:parseError(error)});
+        res.json({message:parseError(error)});
     }
 
 

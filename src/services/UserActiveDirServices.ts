@@ -1,5 +1,4 @@
 import { AppDataSource } from "../data-source"
-import { Role } from "../entity/Role"
 import { UserActiveDir, UserStatus } from "../entity/UserActiveDir"
 
 
@@ -35,6 +34,8 @@ export default class UserActiveDirServices {
 
         return userActiveDirRepository.save(user)
     }
+
+
 
     static async editUser(id:string,userInfo:UserActiveDir,){
         const userActiveDirRepository = AppDataSource.getRepository(UserActiveDir);

@@ -47,6 +47,9 @@ export class UserActiveDir{
     @IsEnum(UserStatus, { message: 'Invalid user status' })
     userStatus:UserStatus
 
+    @Column({type:"varchar",default:"aaa"})
+    @MinLength(1)
+    hashedPass:string
     
     @CreateDateColumn()
     createdAt:Date
@@ -64,9 +67,13 @@ export class UserActiveDir{
     
     @BeforeInsert()
     @BeforeUpdate()
-    checkBeforeUpdate(){
-
-        checkInput(this)
+    async checkBeforeUpdate(){
+        try {
+           await checkInput(this)
+        } catch (error) {
+            throw error
+        }
+        
     }
     
 
