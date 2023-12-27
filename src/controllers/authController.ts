@@ -1,7 +1,7 @@
 import { body, validationResult } from 'express-validator';
 import { Router } from 'express';
 
-import { login, register } from '../services/userServices';
+import { UserServices } from '../services/UserServices';
 import { parseError } from '../utils/utils';
 //const {serverSendMail, emailAdress}=require('../emailClient/mail');
 //const InvalidToken = require('../models/InvalidToken');
@@ -19,7 +19,7 @@ authController.post('/register',
         if (!errors.isEmpty()){
             throw errors
         }
-        let user=await register(req.body.email,req.body.password);
+        let user=await UserServices.register(req.body.email,req.body.password);
         res.status(202);
         res.json(user);
 
@@ -42,7 +42,7 @@ authController.post('/login',
         if (!errors.isEmpty()){
             throw errors
         }
-        let user=await login(req.body.email,req.body.password);
+        let user=await UserServices.login(req.body.email,req.body.password);
         
         res.status(202);
         res.json(user);

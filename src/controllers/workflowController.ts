@@ -1,4 +1,5 @@
 import { RoleServices } from "../services/RoleServices";
+import { StatusServices } from "../services/StatusServices";
 import { parseError } from "../utils/utils";
 import {Router} from 'express'
 
@@ -66,19 +67,10 @@ workflowController.put('/roles/:id',async(req,res)=>{
 
 });
 
-
-/*
-
-
-
-
-
-
-
 workflowController.get('/statuses',async(req,res)=>{
     try {
         
-        let data=await getAllStatuses();
+        let data=await StatusServices.getAllStatuses();
         res.status(201);
         res.json(data);
     } catch (error) {
@@ -88,7 +80,7 @@ workflowController.get('/statuses',async(req,res)=>{
 
 
 });
-workflowController.get('/statuses/:id',async(req,res)=>{
+/*workflowController.get('/statuses/:id',async(req,res)=>{
     try {
         
         let data=await getStatusById(req.params.id);
@@ -115,12 +107,12 @@ workflowController.put('/statuses/:id',async(req,res)=>{
     }
 
 
-});
+});*/
 workflowController.post('/statuses',async(req,res)=>{
     
     try {
         assignNextStatusesAsArray(req);
-        let data =await createStatus(req.body);
+        let data =await StatusServices.createStatus(req.body);
         res.status(201);
         res.json(data);
     } catch (error) {
@@ -128,6 +120,24 @@ workflowController.post('/statuses',async(req,res)=>{
         res.json({message:parseError(error)});
     }
 })
+function assignNextStatusesAsArray(req) {
+    if (!req.body.nextStatuses) {
+        req.body.nextStatuses = [];
+    } else {
+        if (req.body.nextStatuses.constructor !== Array) {
+            req.body.nextStatuses = [req.body.nextStatuses];
+        }
+    }
+}
+/*
+
+
+
+
+
+
+
+
 
 workflowController.get('/workflows',async(req,res)=>{
     try {
@@ -250,15 +260,7 @@ workflowController.get('/subjects/:id',async(req,res)=>{
 module.exports=workflowController;
 
 
-function assignNextStatusesAsArray(req) {
-    if (!req.body.nextStatuses) {
-        req.body.nextStatuses = [];
-    } else {
-        if (req.body.nextStatuses.constructor !== Array) {
-            req.body.nextStatuses = [req.body.nextStatuses];
-        }
-    }
-}
+
 
 function assignRolesAllowedToFinishRequestAsArray(req) {
     if (!req.body.rolesAllowedToFinishRequest) {

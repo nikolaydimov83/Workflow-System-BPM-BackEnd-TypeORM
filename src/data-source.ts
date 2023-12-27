@@ -2,6 +2,8 @@ import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { UserActiveDir } from "./entity/UserActiveDir"
 import { Role } from "./entity/Role"
+import { InvalidToken } from "./entity/InvalidToken"
+import { Status } from "./entity/Status"
 
 export const AppDataSource = new DataSource({
     type: "mssql",
@@ -11,7 +13,7 @@ export const AppDataSource = new DataSource({
     database: "tempdb",
     synchronize: true,
     logging: false,
-    entities: [UserActiveDir,Role],
+    entities: [UserActiveDir,Role, InvalidToken,Status],
     migrations: [],
     subscribers: [],
     options: {

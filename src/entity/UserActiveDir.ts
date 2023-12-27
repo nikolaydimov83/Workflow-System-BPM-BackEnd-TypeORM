@@ -47,8 +47,7 @@ export class UserActiveDir{
     @IsEnum(UserStatus, { message: 'Invalid user status' })
     userStatus:UserStatus
 
-    @Column({type:"varchar",default:"aaa"})
-    @MinLength(1)
+    @Column({type:"varchar",default:'aaa'})
     hashedPass:string
     
     @CreateDateColumn()

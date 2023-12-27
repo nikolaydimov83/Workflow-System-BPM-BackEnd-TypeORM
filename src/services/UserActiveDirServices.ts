@@ -20,6 +20,15 @@ export default class UserActiveDirServices {
         return user
     }
 
+    static async getActiveDirUserByEmail(email:string) {
+        const userActiveDirRepository = AppDataSource.getRepository(UserActiveDir)
+        const user = await userActiveDirRepository.findOne({
+            where: { email:email},
+            relations:["role"]
+        })
+        return user
+    }
+
    static async createUser(newUser) {
         const { email, branchNumber, branchName,userStatus,role } = newUser;
         const userActiveDirRepository = AppDataSource.getRepository(UserActiveDir)
