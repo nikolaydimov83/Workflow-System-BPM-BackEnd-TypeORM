@@ -80,10 +80,10 @@ workflowController.get('/statuses',async(req,res)=>{
 
 
 });
-/*workflowController.get('/statuses/:id',async(req,res)=>{
+workflowController.get('/statuses/:id',async(req,res)=>{
     try {
         
-        let data=await getStatusById(req.params.id);
+        let data=await StatusServices.getStatusById(req.params.id);
         res.status(201);
         res.json(data);
     } catch (error) {
@@ -95,10 +95,12 @@ workflowController.get('/statuses',async(req,res)=>{
 });
 workflowController.put('/statuses/:id',async(req,res)=>{
     try {
-        assignNextStatusesAsArray(req);
+        /*assignNextStatusesAsArray(req);
         let statusInfo=req.body;
         statusInfo.id=req.params.id;
-        let data=await editStatus(statusInfo);
+        let data=await editStatus(statusInfo);*/
+        //const data=await StatusServices.getAllClosedStatuses()
+        const data=await StatusServices.getAllChildStatuses(req.params.id)
         res.status(201);
         res.json(data);
     } catch (error) {
@@ -107,7 +109,7 @@ workflowController.put('/statuses/:id',async(req,res)=>{
     }
 
 
-});*/
+});
 workflowController.post('/statuses',async(req,res)=>{
     
     try {
