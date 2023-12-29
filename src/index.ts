@@ -11,7 +11,7 @@ AppDataSource.initialize().then(async () => {
     const app = express()
     app.use(express.json())
     app.use(cors(corsOprions))
-    app.use(verifyToken())
+    //app.use(verifyToken())
     routes(app);
     app.listen(3000);
     

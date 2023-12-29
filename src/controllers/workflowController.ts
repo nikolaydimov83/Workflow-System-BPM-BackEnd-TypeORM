@@ -1,5 +1,6 @@
 import { RoleServices } from "../services/RoleServices";
 import { StatusServices } from "../services/StatusServices";
+import { WorkflowServices } from "../services/WorkflowServices";
 import { parseError } from "../utils/utils";
 import {Router} from 'express'
 
@@ -122,29 +123,12 @@ workflowController.post('/statuses',async(req,res)=>{
         res.json({message:parseError(error)});
     }
 })
-function assignNextStatusesAsArray(req) {
-    if (!req.body.nextStatuses) {
-        req.body.nextStatuses = [];
-    } else {
-        if (req.body.nextStatuses.constructor !== Array) {
-            req.body.nextStatuses = [req.body.nextStatuses];
-        }
-    }
-}
-/*
-
-
-
-
-
-
-
 
 
 workflowController.get('/workflows',async(req,res)=>{
     try {
         
-        let data=await getAllWorkflows();
+        let data=await WorkflowServices.getAllWorkflows();
         res.status(201);
         res.json(data);
     } catch (error) {
@@ -161,8 +145,7 @@ workflowController.post('/workflows',async(req,res)=>{
         let initialStatus=req.body.initialStatus;
         assignRolesAllowedToFinishRequestAsArray(req)
         let rolesAllowedToFinishRequest=req.body.rolesAllowedToFinishRequest
-        
-        let data=await createWorkflow(workflowName,initialStatus,rolesAllowedToFinishRequest)
+        let data=await WorkflowServices.createWorkflow(workflowName,initialStatus,rolesAllowedToFinishRequest)
         res.status(201);
         res.json(data);
     } catch (error) {
@@ -172,6 +155,41 @@ workflowController.post('/workflows',async(req,res)=>{
 
 
 });
+
+
+
+
+
+function assignNextStatusesAsArray(req) {
+    if (!req.body.nextStatuses) {
+        req.body.nextStatuses = [];
+    } else {
+        if (req.body.nextStatuses.constructor !== Array) {
+            req.body.nextStatuses = [req.body.nextStatuses];
+        }
+    }
+}
+
+function assignRolesAllowedToFinishRequestAsArray(req) {
+    if (!req.body.rolesAllowedToFinishRequest) {
+        req.body.rolesAllowedToFinishRequest = [];
+    } else {
+        if (req.body.rolesAllowedToFinishRequest.constructor !== Array) {
+            req.body.rolesAllowedToFinishRequest = [req.body.rolesAllowedToFinishRequest];
+        }
+    }
+}
+/*
+
+
+
+
+
+
+
+
+
+
 
 workflowController.get('/workflows/:id',async(req,res)=>{
     try {

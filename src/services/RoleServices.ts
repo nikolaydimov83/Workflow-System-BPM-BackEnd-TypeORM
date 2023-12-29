@@ -9,6 +9,7 @@ export class RoleServices {
         const roleRepository = AppDataSource.getRepository(Role);
         const role = Object.assign(new Role(), roleInfo);
 
+
         return roleRepository.save(role)
         
     }

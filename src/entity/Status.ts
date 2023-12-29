@@ -1,7 +1,9 @@
 import { MinLength } from "class-validator";
-import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { AfterInsert, AfterUpdate, BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn, getRepository } from "typeorm";
 import { checkInput } from "../utils/checkInput";
 import { Role } from "./Role";
+import { StatusServices } from "../services/StatusServices";
+import { AppDataSource } from "../data-source";
 
 //{statusName,statusDate,nextStatuses:[],statusSender:User}
 @Entity()
@@ -42,8 +44,54 @@ export class Status{
     @BeforeUpdate()
         updateStatus(){
                 checkInput(this);
+                
             }
+    @AfterInsert()
+    @AfterUpdate()
+            async UpdateWorkflowsAllowedStatuses(){
+                const allStatuses=await getAllChildStatuses(this._id)
+            }
+
 }
+
+ export async function getAllChildStatuses(statusInfo) {
+    const statusRepository=AppDataSource.getRepository(Status)
+    //let counter=0
+    const result = new Set(); // Using a Set to ensure unique statusIds
+  
+    async function traverse(statusId) {
+    let status;
+    /*  if (counter==0){
+        status=statusInfo
+      } else{*/
+        status = await statusRepository
+        .findOne({
+                    where:{_id:statusId},
+                    relations:["statusType","nextStatuses"]
+                });
+     // }
+
+     // counter++;
+      if (!status||status.nextStatuses.length==0||!status.nextStatuses){
+        result.add(statusId.toString());
+        return;
+      } 
+
+      result.add(statusId.toString());
+  
+      for (const nextStatusId of status.nextStatuses) {
+        if (!result.has(nextStatusId._id.toString())) {
+          await traverse(nextStatusId._id);
+        }else{
+            return
+        }
+      }
+    }
+  
+    await traverse(statusInfo);
+  
+    return Array.from(result); // Convert the Set to an array
+  }
 
 /*const { Schema, model,Types } = require("mongoose");
 

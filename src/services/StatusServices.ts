@@ -81,8 +81,45 @@ export class StatusServices{
     static async checkIfStatusIsClosed(status){
         let closedRole=await roleRepository.findOneBy({role:'Closed'});
         return status.statusType.toString() === closedRole._id.toString();
-    }  
-    static async getAllChildStatuses(statusId) {
+    } 
+    static async getAllChildStatuses(statusInfo) {
+        let counter=0
+        const result = new Set(); // Using a Set to ensure unique statusIds
+      
+        async function traverse(statusId) {
+        let status;
+          if (counter=0){
+            status=statusInfo
+          } else{
+            status = await statusRepository
+            .findOne({
+                        where:{_id:statusId},
+                        relations:["statusType","nextStatuses"]
+                    });
+          }
+
+          counter++;
+          if (!status||status.nextStatuses.length==0||!status.nextStatuses){
+            result.add(statusId.toString());
+            return;
+          } 
+    
+          result.add(statusId.toString());
+      
+          for (const nextStatusId of status.nextStatuses) {
+            if (!result.has(nextStatusId._id.toString())) {
+              await traverse(nextStatusId._id);
+            }else{
+                return
+            }
+          }
+        }
+      
+        await traverse(statusInfo);
+      
+        return Array.from(result); // Convert the Set to an array
+      }     
+    /*static async getAllChildStatuses(statusId) {
     
         const result = new Set(); // Using a Set to ensure unique statusIds
       
@@ -113,7 +150,7 @@ export class StatusServices{
         await traverse(statusId);
       
         return Array.from(result); // Convert the Set to an array
-      }
+      }*/
 }
 
 

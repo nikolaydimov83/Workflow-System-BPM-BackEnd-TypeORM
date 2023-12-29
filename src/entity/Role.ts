@@ -1,7 +1,8 @@
 import { IsEnum, MinLength } from "class-validator";
-import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { UserActiveDir } from "./UserActiveDir";
 import { checkInput } from "../utils/checkInput";
+import { Workflow } from "./Workflow";
 
 enum RoleType{
     Branch="Branch",
@@ -44,6 +45,9 @@ export class Role{
     @UpdateDateColumn()
 
     roleUpdateDate:Date
+
+    @ManyToMany(() => Workflow, workflow => workflow.rolesAllowedToFinishRequest)
+    workflows: Workflow[];
 
    /* @OneToMany(
         ()=>UserActiveDir, (user:UserActiveDir) => user.role
