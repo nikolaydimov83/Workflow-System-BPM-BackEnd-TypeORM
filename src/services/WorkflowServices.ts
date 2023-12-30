@@ -22,6 +22,10 @@ export class WorkflowServices{
     static async  getAllWorkflows(){
         return await workflowRepository.find({relations:['rolesAllowedToFinishRequest','initialStatus','allowedStatuses']})//Workflow.find({}).populate('rolesAllowedToFinishRequest initialStatus').populate({path:'allowedStatuses',populate:'statusType'}).lean();
     }
+    static async getWorkflowById(workflowId){
+        return await workflowRepository.findOne({where:{_id:workflowId},relations:['rolesAllowedToFinishRequest','initialStatus','allowedStatuses']})
+    
+    }
 } 
 
 async function checkWorkflowData(initialStatus,rolesAllowedToFinishRequest){
@@ -38,6 +42,7 @@ async function checkWorkflowData(initialStatus,rolesAllowedToFinishRequest){
             }
         });
     }
+
 }
 
 
@@ -84,10 +89,7 @@ async function removeAllowedStatus(status,workflowName){
 
 }
 
-async function getWorkflowById(workflowId){
-    return await Workflow.findById(workflowId).populate('rolesAllowedToFinishRequest').populate('allowedStatuses');
 
-}
 
 async function checkUserRoleIsPriviliged(workflowId,user){
     let userFromActiveDir=await getActiveDirUserByID(user.userStaticInfo);

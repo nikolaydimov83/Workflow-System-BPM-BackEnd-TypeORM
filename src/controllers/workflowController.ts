@@ -156,7 +156,19 @@ workflowController.post('/workflows',async(req,res)=>{
 
 });
 
+workflowController.get('/workflows/:id',async(req,res)=>{
+    try {
+        
+        let data=await WorkflowServices.getWorkflowById(req.params.id);
+        res.status(201);
+        res.json(data);
+    } catch (error) {
+        res.status(401);
+        res.json({message:parseError(error)});
+    }
 
+
+});
 
 
 
@@ -179,6 +191,8 @@ function assignRolesAllowedToFinishRequestAsArray(req) {
         }
     }
 }
+
+
 /*
 
 
@@ -191,19 +205,7 @@ function assignRolesAllowedToFinishRequestAsArray(req) {
 
 
 
-workflowController.get('/workflows/:id',async(req,res)=>{
-    try {
-        
-        let data=await getWorkflowById(req.params.id);
-        res.status(201);
-        res.json(data);
-    } catch (error) {
-        res.status(401);
-        res.json({message:parseError(error)});
-    }
 
-
-});
 
 workflowController.put('/workflows/:id',async(req,res)=>{
     try {
