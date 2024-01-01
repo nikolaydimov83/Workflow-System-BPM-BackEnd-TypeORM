@@ -4,6 +4,8 @@ import { Role } from "../entity/Role";
 import { Status } from "../entity/Status";
 import { Workflow } from "../entity/Workflow";
 import { createEntityInstance } from "./factories/createEntityInstanceFactory";
+import { UserActiveDir } from "../entity/UserActiveDir";
+import UserActiveDirServices from "./UserActiveDirServices";
 
 const statusRepository=AppDataSource.getRepository(Status);
 const roleRepository=AppDataSource.getRepository(Role);
@@ -26,6 +28,17 @@ export class WorkflowServices{
         return await workflowRepository.findOne({where:{_id:workflowId},relations:['rolesAllowedToFinishRequest','initialStatus','allowedStatuses']})
     
     }
+
+    static async checkUserRoleIsPriviliged(workflowId,user){
+        let userFromActiveDir=await UserActiveDirServices.getActiveDirUserByID(user.userStaticInfo)
+
+        let dbWorkFlow=await this.getWorkflowById(workflowId);
+        if(dbWorkFlow.rolesAllowedToFinishRequest.findIndex((a)=>a._id.toString()==userFromActiveDir.role.toString())>-1){
+            return true
+        }else{
+            return false
+        }
+    }
 } 
 
 async function checkWorkflowData(initialStatus,rolesAllowedToFinishRequest){
@@ -42,6 +55,8 @@ async function checkWorkflowData(initialStatus,rolesAllowedToFinishRequest){
             }
         });
     }
+
+    
 
 }
 
@@ -91,15 +106,7 @@ async function removeAllowedStatus(status,workflowName){
 
 
 
-async function checkUserRoleIsPriviliged(workflowId,user){
-    let userFromActiveDir=await getActiveDirUserByID(user.userStaticInfo);
-    let dbWorkFlow=await getWorkflowById(workflowId);
-    if(dbWorkFlow.rolesAllowedToFinishRequest.findIndex((a)=>a.id.toString()==userFromActiveDir.role.toString())>-1){
-        return true
-    }else{
-        return false
-    }
-}
+
 
 
 
