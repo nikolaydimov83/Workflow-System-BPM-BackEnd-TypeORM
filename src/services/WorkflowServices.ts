@@ -18,7 +18,8 @@ export class WorkflowServices{
         const newRolesAllowed = await roleRepository.findBy({_id:In(rolesAllowedToFinishRequest)})
         let workflow=createEntityInstance(Workflow,{workflowName,initialStatus,rolesAllowedToFinishRequest:newRolesAllowed})
         
-        return workflowRepository.save(workflow);
+        await workflowRepository.save(workflow);
+        await workflowRepository.save(workflow);
     }
     
     static async  getAllWorkflows(){
@@ -38,6 +39,19 @@ export class WorkflowServices{
         }else{
             return false
         }
+    }
+    static async editWorkflow(workflowInfo){
+        let workflowId=workflowInfo.id;
+        let workflowName=workflowInfo.workflowName;
+        let initialStatus=workflowInfo.initialStatus;
+        let rolesAllowedToFinishRequest=workflowInfo.rolesAllowedToFinishRequest;
+        if(!rolesAllowedToFinishRequest){
+            rolesAllowedToFinishRequest=[];
+        }
+        await checkWorkflowData(initialStatus,rolesAllowedToFinishRequest);
+        const workflow=workflowRepository.findOne({where:{_id:workflowId}})
+        Object.assign(workflow,{workflowName,initialStatus,rolesAllowedToFinishRequest})
+        return workflow
     }
 } 
 
@@ -63,18 +77,7 @@ async function checkWorkflowData(initialStatus,rolesAllowedToFinishRequest){
 
 /*
 
-async function editWorkflow(workflowInfo){
-    let workflowId=workflowInfo.id;
-    let workflowName=workflowInfo.workflowName;
-    let initialStatus=workflowInfo.initialStatus;
-    let rolesAllowedToFinishRequest=workflowInfo.rolesAllowedToFinishRequest;
-    if(!rolesAllowedToFinishRequest){
-        rolesAllowedToFinishRequest=[];
-    }
-    await checkWorkflowData(initialStatus,rolesAllowedToFinishRequest);
-    let workflow=await Workflow.findByIdAndUpdate(workflowId,{workflowName,initialStatus,rolesAllowedToFinishRequest});
-    return workflow
-}
+
 
 
 

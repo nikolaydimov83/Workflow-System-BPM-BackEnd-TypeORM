@@ -1,9 +1,10 @@
 import { MinLength } from "class-validator";
-import { AfterInsert, AfterUpdate, BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn, getRepository } from "typeorm";
+import { AfterInsert, AfterUpdate, BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, In, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn, getRepository } from "typeorm";
 import { checkInput } from "../utils/checkInput";
 import { Role } from "./Role";
 import { StatusServices } from "../services/StatusServices";
 import { AppDataSource } from "../data-source";
+import { Workflow } from "./Workflow";
 
 //{statusName,statusDate,nextStatuses:[],statusSender:User}
 @Entity()
@@ -46,11 +47,9 @@ export class Status{
                 checkInput(this);
                 
             }
-    @AfterInsert()
-    @AfterUpdate()
-            async UpdateWorkflowsAllowedStatuses(){
-                const allStatuses=await getAllChildStatuses(this._id)
-            }
+  
+
+
 
 }
 

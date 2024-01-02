@@ -1,8 +1,10 @@
 
-import { BeforeInsert, BeforeUpdate, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { AfterInsert, AfterUpdate, BeforeInsert, BeforeUpdate, Column, DataSource, Entity, In, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Status, getAllChildStatuses } from "./Status";
 import { Role } from "./Role";
 import { StatusServices } from "../services/StatusServices";
+import { AppDataSource } from "../data-source";
+
 
 @Entity()
 export class Workflow{
@@ -28,8 +30,12 @@ export class Workflow{
     @BeforeUpdate()
     @BeforeInsert()
       async updateAllowedStatuses(){
-        this.initialStatus
-        const allStatuses=await getAllChildStatuses(this.initialStatus)
+        const statusRepository=AppDataSource.getRepository(Status)
+        const allStatusesIds=(await getAllChildStatuses(this.initialStatus)).map((id)=>Number(id))
+        const allStatuses=await statusRepository.find({where:{_id:In(allStatusesIds)}})
+        this.allowedStatuses=allStatuses
+      
+
       }
 
 }

@@ -1,9 +1,10 @@
 import { AppDataSource } from "../data-source";
-import { Status } from "../entity/Status";
+import { Status, getAllChildStatuses } from "../entity/Status";
 import { Role } from "../entity/Role";
 import { RoleServices } from "./RoleServices";
 import { createEntityInstance } from "./factories/createEntityInstanceFactory";
 import { In } from "typeorm";
+import { Workflow } from "../entity/Workflow";
 
 
 const statusRepository =AppDataSource.getRepository(Status)
@@ -32,40 +33,23 @@ export class StatusServices{
     static async getStatusById(id:number){
         return await statusRepository.findOne({where:{_id:id},relations:["statusType","nextStatuses"] })
     }
-    
-    /*async function editStatus(statusInfo){
-        let nextStatuses=statusInfo.nextStatuses;
-        let statusName=statusInfo.statusName;
-        let statusType=statusInfo.statusType;
-        
-        await checkStatus(nextStatuses,statusType);
-        let workflowsOfTheEditedStatus=await getWorkflowByStatusId(statusInfo.id);
-        const session1 = await mongoose.startSession();
-        session1.startTransaction();
-    
-        try {
-    
-            for (const workflow of workflowsOfTheEditedStatus) {
-                
-                await workflow.save({ session:session1,statusInfo:statusInfo});
-                
-            }
-    
-            let result= await Status.findByIdAndUpdate(statusInfo.id,{statusName,statusType,nextStatuses},{
-                new: true, // Return the updated document
-                session:session1, // Assign the session to the operation
-              })
-          await session1.commitTransaction();
-    
-          return result
-        } catch (error) {
-          await session1.abortTransaction();
-          throw error;
-        } finally {
-            await session1.endSession()
-          
-        }
-    }*/
+    static async editStatus(statusInfo){
+      let nextStatusesIds=statusInfo.nextStatuses;
+      let statusName=statusInfo.statusName;
+      let statusType=statusInfo.statusType;
+      
+      await checkStatus(nextStatusesIds,statusType);
+      const nextStatuses=await statusRepository.findBy({_id:In(nextStatusesIds)})
+      let  status = await statusRepository.findOne({where:{_id:statusInfo.id}})
+      status.statusName=statusName
+      status.statusType=statusType
+      status.nextStatuses=nextStatuses
+
+      const newStatus=await statusRepository.save(status)
+      await UpdateWorkflowsAllowedStatuses(newStatus)
+      
+  }    
+    /**/
      static async getAllClosedStatuses(){
         let closedRole=await roleRepository.findOneBy({role:'Closed'});
         let result =await statusRepository
@@ -175,6 +159,28 @@ async function checkStatus(nextStatuses, statusType) {
             }
         });
     }
+
+}
+
+async function UpdateWorkflowsAllowedStatuses(newStatus){
+  const workflowRepository=AppDataSource.getRepository(Workflow)
+  const statusRepository=AppDataSource.getRepository(Status)
+
+  const workflowsOfTheEditedStatus = await workflowRepository
+    .find({
+      relations:["allowedStatuses","initialStatus","rolesAllowedToFinishRequest"],
+      where:{allowedStatuses:{_id:newStatus._id}}
+    })
+
+  for (const workflow of workflowsOfTheEditedStatus) {
+    const allStatusesIds=(await getAllChildStatuses(workflow.initialStatus._id))
+    const allStatuses=await statusRepository.find({where:{_id:In(allStatusesIds)}});
+    workflow.allowedStatuses=allStatuses;
+    workflowRepository.save(workflow)
+ 
+  }
+
+
 
 }
 
