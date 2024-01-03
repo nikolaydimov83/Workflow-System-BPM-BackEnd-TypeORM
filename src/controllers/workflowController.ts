@@ -1,5 +1,6 @@
 import { RoleServices } from "../services/RoleServices";
 import { StatusServices } from "../services/StatusServices";
+import { SubjectServices } from "../services/SubjectServices";
 import { WorkflowServices } from "../services/WorkflowServices";
 import { parseError } from "../utils/utils";
 import {Router} from 'express'
@@ -169,7 +170,77 @@ workflowController.get('/workflows/:id',async(req,res)=>{
 
 });
 
+workflowController.put('/workflows/:id',async(req,res)=>{
+    try {
+        assignRolesAllowedToFinishRequestAsArray(req)
+        let workflowInfo=req.body;
+        workflowInfo.id=req.params.id;
+        let data=await WorkflowServices.editWorkflow(workflowInfo);
+        res.status(201);
+        res.json(data);
+    } catch (error) {
+        res.status(401);
+        res.json({message:parseError(error)});
+    }
 
+
+});
+
+workflowController.get('/subjects',async(req,res)=>{
+    try {
+        
+        let data=await SubjectServices.getAllSubjects()
+        res.status(201);
+        res.json(data);
+    } catch (error) {
+        res.status(401);
+        res.json({message:parseError(error)});
+    }
+
+
+});
+
+workflowController.post('/subjects',async(req,res)=>{
+    try {
+        
+        let data=await SubjectServices.createSubject(req.body);
+        res.status(201);
+        res.json(data);
+    } catch (error) {
+        res.status(401);
+        res.json({message:parseError(error)});
+    }
+
+
+});
+
+workflowController.put('/subjects/:id',async(req,res)=>{
+    try {
+        
+        let data=await SubjectServices.editSubjectById(req.params.id,req.body);
+        res.status(201);
+        res.json(data);
+    } catch (error) {
+        res.status(401);
+        res.json({message:parseError(error)});
+    }
+
+
+});
+
+workflowController.get('/subjects/:id',async(req,res)=>{
+    try {
+        
+        let data=await SubjectServices.getSubjectById(req.params.id);
+        res.status(201);
+        res.json(data);
+    } catch (error) {
+        res.status(401);
+        res.json({message:parseError(error)});
+    }
+
+
+});
 
 function assignNextStatusesAsArray(req) {
     if (!req.body.nextStatuses) {
@@ -199,28 +270,6 @@ function assignRolesAllowedToFinishRequestAsArray(req) {
 
 
 
-
-
-
-
-
-
-
-workflowController.put('/workflows/:id',async(req,res)=>{
-    try {
-        assignRolesAllowedToFinishRequestAsArray(req)
-        let workflowInfo=req.body;
-        workflowInfo.id=req.params.id;
-        let data=await editWorkflow(workflowInfo);
-        res.status(201);
-        res.json(data);
-    } catch (error) {
-        res.status(401);
-        res.json({message:parseError(error)});
-    }
-
-
-});
 
 workflowController.get('/subjects',async(req,res)=>{
     try {

@@ -1,5 +1,5 @@
 
-import { AfterInsert, AfterUpdate, BeforeInsert, BeforeUpdate, Column, DataSource, Entity, In, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { AfterInsert, AfterUpdate, BeforeInsert, BeforeUpdate, Column, CreateDateColumn, DataSource, Entity, In, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Status, getAllChildStatuses } from "./Status";
 import { Role } from "./Role";
 import { StatusServices } from "../services/StatusServices";
@@ -12,7 +12,7 @@ export class Workflow{
     _id:number
 
 
-    @Column({type:"varchar", unique:true, collation:'SQL_Latin1_General_CP1_CI_AS'})
+    @Column({type:"varchar", unique:true, collation:'utf8_unicode_ci'})
     workflowName:string
 
     @ManyToMany(()=>Status)
@@ -24,8 +24,14 @@ export class Workflow{
     rolesAllowedToFinishRequest:Role[]
 
     @ManyToOne(()=>Status,(initialStatus)=>initialStatus._id)
-    @JoinTable()
-    initialStatus:Status[]
+    @JoinColumn()
+    initialStatus:Status
+
+    @CreateDateColumn()
+    workflowCreateDate:Date
+    
+    @UpdateDateColumn()
+    updatedAt:Date
 
     @BeforeUpdate()
     @BeforeInsert()

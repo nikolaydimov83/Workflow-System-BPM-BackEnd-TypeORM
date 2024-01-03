@@ -47,6 +47,7 @@ export class StatusServices{
 
       const newStatus=await statusRepository.save(status)
       await UpdateWorkflowsAllowedStatuses(newStatus)
+      return newStatus
       
   }    
     /**/

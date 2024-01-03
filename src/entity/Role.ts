@@ -33,7 +33,7 @@ export class Role{
     @Column({
         type:"varchar",
         unique: true,
-        collation:'SQL_Latin1_General_CP1_CI_AS',
+        collation:'utf8_unicode_ci',
     
     })
     role:string

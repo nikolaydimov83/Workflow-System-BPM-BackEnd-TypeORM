@@ -48,9 +48,15 @@ export class WorkflowServices{
         if(!rolesAllowedToFinishRequest){
             rolesAllowedToFinishRequest=[];
         }
+        rolesAllowedToFinishRequest=rolesAllowedToFinishRequest.map((role)=>{return Number(role)});
+        const newRolesAllowed = await roleRepository.findBy({_id:In(rolesAllowedToFinishRequest)})
         await checkWorkflowData(initialStatus,rolesAllowedToFinishRequest);
-        const workflow=workflowRepository.findOne({where:{_id:workflowId}})
-        Object.assign(workflow,{workflowName,initialStatus,rolesAllowedToFinishRequest})
+        const workflow=await workflowRepository.findOne({where:{_id:workflowId}});
+        workflow.workflowName=workflowName;
+        workflow.initialStatus=initialStatus;
+        workflow.rolesAllowedToFinishRequest=newRolesAllowed;
+        await workflowRepository.save(workflow)
+        await workflowRepository.save(workflow)        
         return workflow
     }
 } 
