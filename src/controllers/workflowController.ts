@@ -242,6 +242,20 @@ workflowController.get('/subjects/:id',async(req,res)=>{
 
 });
 
+workflowController.get('/test/:id',async(req,res)=>{
+    try {
+        
+        let data=await SubjectServices.findAllSubjectsByRole(req.params.id);
+        res.status(201);
+        res.json(data);
+    } catch (error) {
+        res.status(401);
+        res.json({message:parseError(error)});
+    }
+
+
+});
+
 function assignNextStatusesAsArray(req) {
     if (!req.body.nextStatuses) {
         req.body.nextStatuses = [];

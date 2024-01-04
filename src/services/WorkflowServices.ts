@@ -23,10 +23,27 @@ export class WorkflowServices{
     }
     
     static async  getAllWorkflows(){
-        return await workflowRepository.find({relations:['rolesAllowedToFinishRequest','initialStatus','allowedStatuses']})//Workflow.find({}).populate('rolesAllowedToFinishRequest initialStatus').populate({path:'allowedStatuses',populate:'statusType'}).lean();
+        return await workflowRepository
+            .find({
+                relations:[
+                    'rolesAllowedToFinishRequest',
+                    'initialStatus',
+                    'initialStatus.statusType',
+                    'allowedStatuses',
+                    'allowedStatuses.statusType'
+                ]})
     }
     static async getWorkflowById(workflowId){
-        return await workflowRepository.findOne({where:{_id:workflowId},relations:['rolesAllowedToFinishRequest','initialStatus','allowedStatuses']})
+        return await workflowRepository
+            .findOne({
+                where:{_id:workflowId},
+                relations:[
+                    'rolesAllowedToFinishRequest',
+                    'initialStatus',
+                    'initialStatus.statusType',
+                    'allowedStatuses',
+                    'allowedStatuses.statusType'
+                ]})
     
     }
 
@@ -34,7 +51,8 @@ export class WorkflowServices{
         let userFromActiveDir=await UserActiveDirServices.getActiveDirUserByID(user.userStaticInfo)
 
         let dbWorkFlow=await this.getWorkflowById(workflowId);
-        if(dbWorkFlow.rolesAllowedToFinishRequest.findIndex((a)=>a._id.toString()==userFromActiveDir.role.toString())>-1){
+        if(dbWorkFlow.rolesAllowedToFinishRequest
+            .findIndex((a)=>a._id.toString()==userFromActiveDir.role.toString())>-1){
             return true
         }else{
             return false
