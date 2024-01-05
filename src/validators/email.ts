@@ -2,6 +2,7 @@ import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface 
 const emailPattern = /^[A-Za-z0-9]+@postbank.bg$/
 const example='user@postbank.bg'
 @ValidatorConstraint({ name: 'email', async: false })
+
 export class EmailValidator implements ValidatorConstraintInterface {
   validate(email: string, args: ValidationArguments) {
     // Your custom validation logic goes here

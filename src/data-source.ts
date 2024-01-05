@@ -6,6 +6,7 @@ import { InvalidToken } from "./entity/InvalidToken"
 import { Status } from "./entity/Status"
 import { Workflow } from "./entity/Workflow"
 import { Subject } from "./entity/Subject"
+import { Request } from "./entity/Request"
 
 export const AppDataSource = new DataSource({
     type: "mssql",
@@ -15,7 +16,7 @@ export const AppDataSource = new DataSource({
     database: "tempdb",
     synchronize: true,
     logging: false,
-    entities: [UserActiveDir,Role, InvalidToken,Status, Workflow,Subject],
+    entities: [UserActiveDir,Role, InvalidToken,Status, Workflow,Subject, Request],
     migrations: [],
     subscribers: [],
     options: {

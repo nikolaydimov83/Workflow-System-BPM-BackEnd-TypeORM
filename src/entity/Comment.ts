@@ -22,7 +22,12 @@ commentOwner:UserActiveDir
 @BeforeInsert()
 @BeforeUpdate()
 async checkBeforeUpdate(){
-    await checkInput(this)
+    try {
+        await checkInput(this)    
+    } catch (error) {
+        throw error 
+    }
+    
 }
 }
 

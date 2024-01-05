@@ -59,7 +59,12 @@ export class Role{
     @BeforeInsert()
     @BeforeUpdate()
         updateRole() {
-            checkInput(this);
+            try {
+                checkInput(this);
+            } catch (error) {
+                throw error
+            }
+            
             if (this.roleType==="Branch"){
                 this.role = this.roleType+this.roleName
 

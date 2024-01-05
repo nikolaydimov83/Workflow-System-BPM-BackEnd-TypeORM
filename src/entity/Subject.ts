@@ -31,7 +31,12 @@ export class Subject{
     @BeforeInsert()
     @BeforeUpdate()
         updateSubject(){
-            checkInput(this)
+            try {
+                checkInput(this)
+            } catch (error) {
+                throw error    
+            }
+            
         }
 
    

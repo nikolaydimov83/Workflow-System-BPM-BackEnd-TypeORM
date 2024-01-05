@@ -44,8 +44,12 @@ export class Status{
     @BeforeInsert()
     @BeforeUpdate()
         updateStatus(){
-                checkInput(this);
-                
+
+          try {
+            checkInput(this);
+          } catch (error) {
+            throw error  
+          }         
             }
   
 

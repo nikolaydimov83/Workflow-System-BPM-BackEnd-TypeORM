@@ -42,14 +42,14 @@ export class SubjectServices{
         const workflows = await workflowRepository
         .createQueryBuilder("workflow")
         .leftJoin("workflow.initialStatus", "initialStatus")
-        .where("initialStatus.statusType._id = :roleId", { roleId: Number(role) })
+        .where("initialStatus.statusType._id = :roleId", { roleId: Number(role._id) })
         .getMany();
         let result=new Set()
     
         for (const workflow of workflows) {
             let subjects=await subjectRepository
                 .createQueryBuilder('subject')
-                .leftJoin('subject.assignedToWorkflow','assignedToWorkflow')
+                .leftJoinAndSelect('subject.assignedToWorkflow','assignedToWorkflow')
                 .where('assignedToWorkflow._id= :wokflowId',{wokflowId:workflow._id})
                 .getMany()
             //await Subject.find({assignedToWorkflow:workflow.id})
