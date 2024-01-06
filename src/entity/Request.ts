@@ -1,8 +1,19 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Workflow } from "./Workflow";
 import { DeadlineDateValidator } from "../validators/deadline";
-import { Validate } from "class-validator";
+import { IsEnum, IsInt, Max, MaxLength, Min, MinLength, Validate } from "class-validator";
 import { checkInput } from "../utils/checkInput";
+import { Status } from "./Status";
+import { IApplyIdValidator } from "../validators/iApplyId";
+import { Comment } from "./Comment";
+import { Subject } from "./Subject";
+import { UserActiveDir } from "./UserActiveDir";
+
+export enum CCY {
+    BGN = 'BGN',
+    EUR = 'EUR',
+    USD = 'USD'
+  }
 
 @Entity()
 export class Request{
@@ -19,6 +30,98 @@ export class Request{
     @Validate(DeadlineDateValidator)
     deadlineDate:Date
 
+    
+    @ManyToOne(
+        ()=>Status, (status)=>status._id,
+        {nullable:false})
+    status:Status
+
+    @Column({
+        type:'datetime2',
+        nullable:false
+    })
+    statusIncomingDate:Date
+
+    @Column({
+        type:'nvarchar',
+        nullable:false
+    })
+    statusSender:string
+
+    @Column({
+        type:"nvarchar",
+        nullable:false
+    })
+    @MinLength(15)
+    description:string
+
+    @Column({
+        type:"smallint",
+
+    })
+    @IsInt()
+    @Min(1)
+    @Max(999)
+    finCenter:number
+
+    @Column({
+        type:"smallint",
+
+    })
+    @IsInt()
+    @Min(1)
+    @Max(999)
+    refferingFinCenter:number
+
+    @Column({
+        type:"nvarchar",
+        nullable:false
+    })
+    @Validate(IApplyIdValidator)
+    iApplyId:string
+
+    @Column({
+        type:"nvarchar",
+        nullable:false
+    })
+    clientName:string
+
+    @Column({
+        type:"nvarchar",
+        nullable:false
+    })
+    @MinLength(9)
+    @MaxLength(10)
+    clientEGFN:string
+
+    @Column({
+        type:"nvarchar",
+        nullable:false
+    })
+    product:string
+
+    @Column({
+        type:"real",
+        nullable:false
+    })
+    @Min(1000)
+    amount:number
+
+    @Column({
+        type:"nvarchar",
+        nullable:false
+    })
+    @IsEnum(CCY, { message: 'Invalid user currency' })
+    ccy:CCY
+
+    @OneToMany(()=>Comment, (comment)=>comment._id)
+    comments:Comment[]
+
+    @ManyToOne(()=>Subject, (subject)=>subject._id)
+    subjectId:Subject
+
+    @OneToOne(()=>UserActiveDir, (user)=>user._id)
+    requestCreatorEmail:Subject
 
     @BeforeInsert()
     @BeforeUpdate()
@@ -36,38 +139,10 @@ export class Request{
 
 const requestSchema=new Schema({
    
-    deadlineDate:{type:Date, required:true,validate:{
-        validator:async (value)=>{
-            let today=new Date()
-            today.setHours(0,0,0,0);
-            value.setHours(0,0,0,0);
-            return value>=today
-
-        },
-        message:(props)=>{return `${props.value} is past Date!` }
-    }},
-    status:{type:Types.ObjectId, ref:'Status'},
-    statusIncomingDate:{type:Date, required:true},
-    statusSender:{type:String,required:true},
+  
     history:{type:[],default:[]},
-    description:{type:String, minLength:15},
-    finCenter:{type:Number,required:true,min:1,max:999},
-    refferingFinCenter:{type:Number,min:1,max:999},
-    iApplyId:{type:String,required:true,validate:{
-        validator:async (value)=>{
-            const regex=/^[A-Z]{2}[0-9]+$/
-            return regex.test(value)
+    
 
-        },
-        message:(props)=>{return `${props.value} is not a valid I-applyId` }
-    }},
-    clientName:{type:String,required:true},
-    clientEGFN:{type:String,required:true,minLength:9,maxLength:10},
-    product:{type:String,required:true},
-    amount:{type:Number, min:1000},
-    ccy:{type:String, enum:['BGN', 'EUR','USD','Other']},
-    comments:{type:[Types.ObjectId],ref:'Comment',default:[]},
-    subjectId:{type:Types.ObjectId, ref:'Subject',req:true},
     requestCreatorEmail:{type:String,ref:'User',req:true}  
 });
 

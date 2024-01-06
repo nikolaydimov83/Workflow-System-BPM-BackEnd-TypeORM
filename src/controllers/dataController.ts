@@ -1,8 +1,27 @@
-/*import {Router} from 'express'
+import {Router} from 'express'
+import { parseError } from '../utils/utils';
+import { RequestServices } from '../services/RequestServices';
 
 export const dataController=Router()
 
-dataController.post('/',async (req,res)=>{
+dataController.get('/',async (req,res)=>{
+    let user=req.user;
+
+   try {
+
+    let pendingList=await RequestServices.getAllUserPendingRequests(user)
+    res.status(201);    
+    res.json(pendingList);
+   
+    
+   } catch (error) {
+    res.status(400);
+    res.json({message:parseError(error)});
+   }
+
+});
+
+/*dataController.post('/',async (req,res)=>{
     let user=req.user;
     let sortProperty=req.body.sortCriteria;
     let sortIndex=req.body.sortIndex
@@ -33,22 +52,7 @@ const { parseError } = require('../utils/utils');
 
 const dataController=require('express').Router();
 
-dataController.get('/',async (req,res)=>{
-    let user=req.user;
 
-   try {
-
-    let pendingList=await getAllUserPendingRequests(user)
-    res.status(201);    
-    res.json(pendingList);
-   
-    
-   } catch (error) {
-    res.status(400);
-    res.json({message:parseError(error)});
-   }
-
-});
 
 
 dataController.get('/:id',async (req,res)=>{
