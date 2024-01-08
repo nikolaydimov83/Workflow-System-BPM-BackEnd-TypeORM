@@ -33,31 +33,31 @@ export class Request{
     
     @ManyToOne(
         ()=>Status, (status)=>status._id,
-        {nullable:false})
+        {nullable:true})
     status:Status
 
     @Column({
         type:'datetime2',
-        nullable:false
+        nullable:true
     })
     statusIncomingDate:Date
 
     @Column({
         type:'nvarchar',
-        nullable:false
+        nullable:true
     })
     statusSender:string
 
     @Column({
         type:"nvarchar",
-        nullable:false
+        nullable:true
     })
     @MinLength(15)
     description:string
 
     @Column({
         type:"smallint",
-
+        nullable:true
     })
     @IsInt()
     @Min(1)
@@ -66,7 +66,7 @@ export class Request{
 
     @Column({
         type:"smallint",
-
+        nullable:true
     })
     @IsInt()
     @Min(1)
@@ -75,20 +75,20 @@ export class Request{
 
     @Column({
         type:"nvarchar",
-        nullable:false
+        nullable:true
     })
     @Validate(IApplyIdValidator)
     iApplyId:string
 
     @Column({
         type:"nvarchar",
-        nullable:false
+        nullable:true
     })
     clientName:string
 
     @Column({
         type:"nvarchar",
-        nullable:false
+        nullable:true
     })
     @MinLength(9)
     @MaxLength(10)
@@ -96,20 +96,20 @@ export class Request{
 
     @Column({
         type:"nvarchar",
-        nullable:false
+        nullable:true
     })
     product:string
 
     @Column({
         type:"real",
-        nullable:false
+        nullable:true
     })
     @Min(1000)
     amount:number
 
     @Column({
         type:"nvarchar",
-        nullable:false
+        nullable:true
     })
     @IsEnum(CCY, { message: 'Invalid user currency' })
     ccy:CCY

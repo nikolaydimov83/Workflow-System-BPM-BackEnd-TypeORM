@@ -16,11 +16,8 @@ export class RequestServices{
         return await requestRepository.save(request)
     }
     static async getAllUserPendingRequests(user){
-        let userFinCenter=user.finCenter;
-        let userRole=user.role;
-        
-        let activeDirUser=await UserActiveDirServices.getActiveDirUserByID(user._id);
-
+        let userFinCenter=user.branchNumber;
+        let userRole=user.role.role;
         //const allStatusesRelatedToUserRole=await Status.find({statusType:activeDirUserRoleId})
         let searchContextString='Заявки за изпълнение';
         

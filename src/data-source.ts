@@ -7,6 +7,8 @@ import { Status } from "./entity/Status"
 import { Workflow } from "./entity/Workflow"
 import { Subject } from "./entity/Subject"
 import { Request } from "./entity/Request"
+import { Comment } from "./entity/Comment"
+import { IApply } from "./entity/IApply"
 
 export const AppDataSource = new DataSource({
     type: "mssql",
@@ -16,7 +18,7 @@ export const AppDataSource = new DataSource({
     database: "tempdb",
     synchronize: true,
     logging: false,
-    entities: [UserActiveDir,Role, InvalidToken,Status, Workflow,Subject, Request],
+    entities: [UserActiveDir,Role, InvalidToken,Status, Workflow,Subject, Request,Comment, IApply],
     migrations: [],
     subscribers: [],
     options: {

@@ -4,8 +4,15 @@ import { routes } from "./routes";
 import * as cors from 'cors'
 import corsOprions from "./middlewares/cors"
 import verifyToken from "./middlewares/jwt";
+import * as cron from 'node-cron'
+import { cronIapplyReplacer } from "./utils/cronSchedulerFunctions";
 
 AppDataSource.initialize().then(async () => {
+    
+    cron.schedule('07 00 * * *', cronIapplyReplacer, {
+        scheduled: true,
+        timezone: 'Europe/Sofia'
+      });
 
     // create express app
     const app = express()
