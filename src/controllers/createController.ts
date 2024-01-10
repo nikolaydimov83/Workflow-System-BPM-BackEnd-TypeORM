@@ -4,6 +4,7 @@ import { SubjectServices } from '../services/SubjectServices';
 import { Subject } from '../entity/Subject';
 import { RequestServices } from '../services/RequestServices';
 import { parseError } from '../utils/utils';
+import { IApplyServices } from '../services/IApplyServices';
 
 
 export const createController=Router();
@@ -33,6 +34,37 @@ createController.post('/',async (req,res)=>{
     
 
 })
+
+async function prepareBodyForRequestCreate(req) {
+    let body = req.body;
+    let iApplyId = body.iApplyId;
+    let requestWorkflow = await SubjectServices.findWorkflowBySubjectId(body.subjectId);
+    if (!requestWorkflow){
+        throw new Error('The subject you are chising does not correspond to any Workflow!')
+    }
+    body.requestWorkflow = requestWorkflow._id;
+    let status = requestWorkflow.allowedStatuses[0];
+    body.status = status;
+    body.statusIncomingDate = (new Date())
+    body.statusSender = req.user.email;
+
+    body.history = [];
+
+    let historyEntry = { status: status, incomingDate: body.statusIncomingDate, statusSender: req.user.email };
+    body.history.push(historyEntry);
+
+    let iApplyData = await IApplyServices.readIapplyData(iApplyId);
+    body.amount = iApplyData.amount;
+    body.ccy = iApplyData.ccy;
+    body.clientEGFN = iApplyData.clientEGFN;
+    body.clientName = iApplyData.clientName;
+    body.finCenter = iApplyData.finCenter;
+    body.iApplyId = iApplyData.iApplyId;
+    body.product = iApplyData.product;
+    body.refferingFinCenter = iApplyData.refferingFinCenter;
+    body.requestCreatorEmail=req.user.email;
+    return body;
+}
 
 /*const { Types } = require('mongoose');
 const { serverSendMail, emailAdress, prepareMailContent } = require('../emailClient/mail');
